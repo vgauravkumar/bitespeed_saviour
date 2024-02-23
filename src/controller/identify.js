@@ -10,12 +10,13 @@ const identify = async (req, res) => {
 
         // Business logic
         let iauResponse = await identifyAndUpdate(phoneNumber, email, new Date().toISOString());
-        console.log(iauResponse);
+        // console.log(iauResponse);
         const iau = iauResponse ? true : false;
 
         const DB = new Database();
-        console.log(`INSERT INTO Contact (phoneNumber, email, linkedId, linkPrecedence, createdAt, updatedAt) VALUES ("${phoneNumber}", "${email}", ${iauResponse ? iauResponse.primaryContactId : null}, "${iauResponse ? "secondary" : "primary"}", NOW(), NOW());`);
+        // console.log(`INSERT INTO Contact (phoneNumber, email, linkedId, linkPrecedence, createdAt, updatedAt) VALUES ("${phoneNumber}", "${email}", ${iauResponse ? iauResponse.primaryContactId : null}, "${iauResponse ? "secondary" : "primary"}", NOW(), NOW());`);
         const insertQuery = await DB.query(`INSERT INTO Contact (phoneNumber, email, linkedId, linkPrecedence, createdAt, updatedAt) VALUES ("${phoneNumber}", "${email}", ${iauResponse ? iauResponse.primaryContactId : null}, "${iauResponse ? "secondary" : "primary"}", NOW(), NOW());`);
+        // const insertQuery = {insertId: 999}
         DB.close();
 
         if (!iau) iauResponse = {};
@@ -23,7 +24,7 @@ const identify = async (req, res) => {
         // Primary Contact ID
         if (!iau) iauResponse.primaryContactId = insertQuery.insertId;
 
-        console.log(iauResponse);
+        // console.log(iauResponse);
         // Email
         if (!iau)
             iauResponse.emails = [email];
@@ -65,11 +66,11 @@ const test = async (req, res) => {
         const DB = new Database();
         const query = await DB.query(`SELECT createdAt FROM Contact;`);
         DB.close();
-        console.log(query[0].createdAt);
+        // console.log(query[0].createdAt);
         if (new Date().toISOString() > query[0].createdAt) {
-            console.log("No");
+            // console.log("No");
         } else {
-            console.log("Yes");
+            // console.log("Yes");
         }
 
         // Return statement

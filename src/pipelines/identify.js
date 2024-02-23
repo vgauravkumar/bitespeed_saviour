@@ -11,6 +11,7 @@ const identifyAndUpdate = async (phoneNumber, email, primaryContactCreatedAt, re
             "secondaryContactIds": []
         };
         const data = await getLinkedContacts(phoneNumber, email);
+        // console.log(data);
         if (!data.length)
             return null;
         responsePrototype.primaryContactId = data[0].id;

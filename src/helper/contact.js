@@ -1,6 +1,17 @@
 const logger = require('../services/logger');
 const Database = require('../services/db');
 
+const getIds = (data) => {
+    let result = '';
+    for (let i = 1; i < data.length; i++) {
+        result += data[i].id;
+        if (i < data.length - 1) {
+            result += ', ';
+        }
+    }
+    return result;
+};
+
 const getLinkedContacts = async (phoneNumber, email) => {
     try {
         const DB = new Database();
@@ -30,10 +41,20 @@ const getLinkedContacts = async (phoneNumber, email) => {
                 )
             ))) AS required_data;
         `);
+        // console.log({query_result});
+        if(query_result.length > 1) {
+            const secondaryIds = getIds(query_result);
+            // console.log({secondaryIds});
+            const updateQuery = `UPDATE Contact SET linkedId = ${query_result[0].id}, linkPrecedence = "secondary", updatedAt = NOW() WHERE id IN (${secondaryIds});`;
+            // console.log(updateQuery);
+            const x = await DB.query(updateQuery);            
+            // console.log(x);
+        }
         DB.close();
+        // console.log({query_result});
         return query_result;
     } catch (err) {
-        logger.error(err.stash);
+        logger.error(err.stack);
     }
 };
 
