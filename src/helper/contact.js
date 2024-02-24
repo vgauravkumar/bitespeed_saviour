@@ -45,7 +45,7 @@ const getLinkedContacts = async (phoneNumber, email) => {
         if(query_result.length > 1) {
             const secondaryIds = getIds(query_result);
             // console.log({secondaryIds});
-            const updateQuery = `UPDATE Contact SET linkedId = ${query_result[0].id}, linkPrecedence = "secondary", updatedAt = NOW() WHERE id IN (${secondaryIds});`;
+            const updateQuery = `UPDATE Contact SET linkedId = ${query_result[0].id}, linkPrecedence = "secondary", updatedAt = NOW() WHERE id IN (${secondaryIds}) AND (linkedId != ${query_result[0].id} OR linkPrecedence != "secondary");`;
             // console.log(updateQuery);
             const x = await DB.query(updateQuery);            
             // console.log(x);
